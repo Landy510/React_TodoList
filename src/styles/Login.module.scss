@@ -1,5 +1,13 @@
+form.active {
+  display: block;
+}
+form.hidden {
+  display: none;
+}
+
 .login-wrapper {
   display: flex;
+  align-items: center;
 }
 
 .form-wrapper {
