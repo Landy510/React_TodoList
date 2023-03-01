@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans TC';
+  font-size: 14px;
+}
+
+body {
+  height: 100vh;
+  color: #333333;
+}
+
+input {
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: 304px;
+  border: none;
+}
+
+button {
+  padding: 12px 16px;
+  width: 128px;
+  border-radius: 10px;
+  background-color: transparent;
+  border: none;
+}
+
+button.active {
+  background-color: #333333;
+  color: #FFFFFF;
+}
+
+.text-bold-light {
+  font-weight: 400;
+}
+
+.text-bold-medium {
+  font-weight: 500;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.text-grey {
+  color: #9F9A91;
+}
+
+.text-white {
+  color: #FFFFFF;
+}
+
+.fz-medium {
+  font-size: 16px;
+}
+
+.fz-large {
+  font-size: 24px;
+}
