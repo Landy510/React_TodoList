@@ -2,6 +2,35 @@ import styles from '@/styles/Login.module.scss';
 import { useState } from 'react';
 const Login = () => {
   const [type, setType] = useState('login');
+  const [loginState, setLoginState] = useState({
+    email: '',
+    password: ''
+  })
+  const [registerState, setRegisterState] = useState({
+    email: '',
+    nickname: '',
+    password: '',
+    rePassword: ''
+  })
+  const handleLoginFormChange = (evt) => {
+    setLoginState({
+      ...loginState,
+      [evt.target.name]: evt.target.value
+    })
+  }
+  const handleRegisterFormChange = (evt) => {
+    setRegisterState({
+      ...registerState,
+      [evt.target.name]: evt.target.value
+    })
+  }
+  const onLoginFormSubmit = () => {
+    console.log(loginState.email, loginState.password)
+  }
+  const onRegisterFormSubmit = () => {
+    console.log(registerState)
+  }
+
   return (
     <div className={styles['login-wrapper']}>
       <img className={styles['desktop-image']} src="src/assets/images/left.png" alt="" />
@@ -11,13 +40,18 @@ const Login = () => {
 
 
         {/* Login Form | START */}
-        <form className={type === 'login' ? styles['active'] : styles['hidden']}>
+        <form 
+          className={type === 'login' ? styles['active'] : styles['hidden']}
+        >
           <div className={styles['cell']}>
             <label htmlFor='email' className={`text-bold ${styles['label']}`}>Email</label>
             <input 
               type="email" 
               placeholder='請輸入Email'
               id='email'
+              name="email"
+              value={loginState.email}
+              onChange={handleLoginFormChange}
             />
             <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>
           </div>
@@ -27,6 +61,9 @@ const Login = () => {
               type="password" 
               placeholder='請輸入密碼'
               id='password'
+              name="password"
+              value={loginState.password}
+              onChange={handleLoginFormChange}
             />
           </div>
         </form>
@@ -40,6 +77,9 @@ const Login = () => {
               type="email" 
               placeholder='請輸入Email'
               id='register_email'
+              name='email'
+              value={registerState.email}
+              onChange={handleRegisterFormChange}
             />
           </div>
           <div className={styles['cell']}>
@@ -48,6 +88,9 @@ const Login = () => {
               type="text" 
               placeholder='請輸入您的暱稱'
               id='nickname'
+              name='nickname'
+              value={registerState.nickname}
+              onChange={handleRegisterFormChange}
             />
           </div>
           <div className={styles['cell']}>
@@ -56,6 +99,9 @@ const Login = () => {
               type="password" 
               placeholder='請輸入密碼'
               id='register_password'
+              name='password'
+              value={registerState.password}
+              onChange={handleRegisterFormChange}
             />
           </div>
           <div className={styles['cell']}>
@@ -64,6 +110,9 @@ const Login = () => {
               type="password" 
               placeholder='請再次輸入密碼'
               id='rePassword'
+              name='rePassword'
+              value={registerState.rePassword}
+              onChange={handleRegisterFormChange}
             />
           </div>
         </form>
@@ -72,14 +121,20 @@ const Login = () => {
             <button 
               className={`fz-medium text-bold ${type==='login' ? 'active' : ''}`}
               style={type ==='login' ? {order: '-1'} : {}}
-              type='submit'
-              onClick={() => setType('login')}
+              type='button'
+              onClick={() => {
+                setType('login');
+                onLoginFormSubmit();
+              }}
             >登入</button>
             <button 
               className={`fz-medium text-bold ${type==='register' ? 'active' : ''}`} 
               style={type==='register' ? {order: '-1'} : {}}
               type='button'
-              onClick={() => setType('register')}
+              onClick={() => {
+                setType('register');
+                onRegisterFormSubmit();
+              }}
             >註冊帳號</button>
         </div>
       </div>
