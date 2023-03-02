@@ -1,8 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import styles from '@/styles/Layout.module.scss';
 const Layout = () => {
+  const {pathname} = useLocation();
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${pathname === '/' ? '' : styles.accessed}`}>
       <Outlet></Outlet>
     </div>
   )

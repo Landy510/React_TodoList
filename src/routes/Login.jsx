@@ -1,6 +1,8 @@
 import styles from '@/styles/Login.module.scss';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+  const navigate = useNavigate();
   const [type, setType] = useState('login');
   const [loginState, setLoginState] = useState({
     email: '',
@@ -26,7 +28,7 @@ const Login = () => {
   }
 
   const onLoginFormSubmit = () => {
-    if(type !== 'login') return;
+    if(type !== 'login') return; // 防止 form 表單是在 註冊帳號的狀態下，去按 登入鈕 會執行以下去打 登入 api 的狀況
     const url = 'https://todoo.5xcamp.us/users/sign_in'
     const body = JSON.stringify({
         user: {
@@ -46,12 +48,15 @@ const Login = () => {
         if(res.status !== 200) return Promise.reject(resJson);
         return resJson;
       })
-      .then(resJson => console.log('success', resJson))
+      .then(resJson => {
+        console.log('success', resJson);
+        navigate('/index');
+      })
       .catch(err => console.log('err', err.message))
   }
 
   const onRegisterFormSubmit = () => {
-    if(type !== 'register') return;
+    if(type !== 'register') return; // 防止 form 表單是在 登入的狀態下，去按 登入鈕 會執行以下去打 註冊帳號 api 的狀況
     const url = 'https://todoo.5xcamp.us/users';
     const body = JSON.stringify({
       user:{

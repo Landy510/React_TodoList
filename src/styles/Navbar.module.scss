@@ -1,0 +1,38 @@
+nav {
+  display: flex;
+  padding: 25px 35px;
+
+  .logo img{
+    display: block;
+  }
+
+  .header-root-list {
+    display: flex;
+    margin-left: auto;
+  
+    .header-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .header-option + .header-option{
+      margin-left: 25px;
+    }
+  
+    .logout-btn:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+
+@media(max-width: 378px) {
+  .header-root-list {
+    .header-option {
+      &.username {
+        display: none;
+      }
+    }
+  }
+}
