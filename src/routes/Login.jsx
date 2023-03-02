@@ -24,11 +24,56 @@ const Login = () => {
       [evt.target.name]: evt.target.value
     })
   }
+
   const onLoginFormSubmit = () => {
-    console.log(loginState.email, loginState.password)
+    if(type !== 'login') return;
+    const url = 'https://todoo.5xcamp.us/users/sign_in'
+    const body = JSON.stringify({
+        user: {
+          email: loginState.email,
+          password: loginState.password
+        }
+      })
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body
+    }
+
+    fetch(url, requestOptions)
+      .then(async (res) => {
+        const resJson = await res.json();
+        if(res.status !== 200) return Promise.reject(resJson);
+        return resJson;
+      })
+      .then(resJson => console.log('success', resJson))
+      .catch(err => console.log('err', err.message))
   }
+
   const onRegisterFormSubmit = () => {
-    console.log(registerState)
+    if(type !== 'register') return;
+    const url = 'https://todoo.5xcamp.us/users';
+    const body = JSON.stringify({
+      user:{
+        email: registerState.email,
+        nickname: registerState.nickname,
+        password: registerState.password
+      }
+    })
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body
+    }
+    
+    fetch(url, requestOptions)
+      .then(async (res) => {
+        const resJson = await res.json();
+        if(res.status !== 200) return Promise.reject(resJson);
+        return resJson;
+      })
+      .then(res => console.log('result', res))
+      .catch(err => console.log('err', err))
   }
 
   return (
