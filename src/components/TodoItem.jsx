@@ -18,7 +18,7 @@ const TodoItem = ({id, title, completed}) => {
             )
           } 
         </span>
-        <span>
+        <span className={`${completed ? styles['done'] : ''}`}>
           {title}
         </span>
       </p>
