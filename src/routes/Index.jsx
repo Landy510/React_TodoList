@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import InputTodo from "@/components/InputTodo";
+import TodoList from "@/components/TodoList";
 import styles from '@/styles/Index.module.scss';
 const Index = () => {
   return (
@@ -7,6 +8,7 @@ const Index = () => {
       <Navbar></Navbar>
       <div className={styles['todo-section']}>
         <InputTodo></InputTodo>
+        <TodoList></TodoList>
       </div>
     </>
   )
