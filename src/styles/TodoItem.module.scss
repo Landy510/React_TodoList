@@ -1,12 +1,28 @@
 .todoItem {
   display: flex;
   align-items: center;
-  
+
   p {
+    display: flex;
+    align-items: center;
     margin-left: 20px;
     padding: 15px 0;
     flex-grow: 1;
-    border-bottom: 1px solid #E5E5E5;
+
+    input[type=checkbox] {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px; 
+    }
+
+    .checkbox-section {
+      display: flex;
+      margin-right: 10px;
+    }
+  }
+
+  p:nth-child(n + 1) {
+    border-top: 1px solid #E5E5E5;
   }
 
   .del-icon {
