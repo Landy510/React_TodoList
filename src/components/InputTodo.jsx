@@ -1,11 +1,37 @@
 import styles from '@/styles/InputTodo.module.scss';
+import { useTodosStore } from '@/store';
+import { useState } from 'react';
 import { BsFillPlusSquareFill } from "react-icons/bs";
+import axios from 'axios';
 const InputTodo = () => {
+  const [inputState, setInputState] = useState('');
+  const addTodoItem = useTodosStore(state => state.addTodoItem)
+  const onHandleSubmit = (evt) => {
+    evt.preventDefault();
+    const body = {
+      todo: {
+        content: inputState
+      }
+    }
+    axios.post('https://todoo.5xcamp.us/todos', body, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `${localStorage.getItem('access_token') || ''}`
+      }
+    })
+    .then(res => addTodoItem({id: res.data.id, title: res.data.content}))
+    .catch(err => console.log('add fail', err))
+  }
+  
   return (
-    <form className={styles['input-wrapper']}>
+    <form 
+      className={styles['input-wrapper']}
+      onSubmit={onHandleSubmit}
+    >
       <input 
         type="text" 
         placeholder='新增代辦事項'
+        onChange={(e) => setInputState(e.target.value)}
       />
       <button 
         type='submit'

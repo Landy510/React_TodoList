@@ -12,6 +12,17 @@ const todosStore = (set) => ({
       title: '整理電腦資料夾',
       completed: true
     },
-  ]
+  ],
+  addTodoItem: ({id, title}) => {
+    const newTodo = {
+      id,
+      title,
+      completed: false
+    }
+
+    set((state) => ({
+      todos: [...state.todos, newTodo]
+    }))
+  }
 })
 export const useTodosStore = create(todosStore)

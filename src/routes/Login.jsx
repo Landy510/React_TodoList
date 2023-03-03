@@ -1,6 +1,8 @@
 import styles from '@/styles/Login.module.scss';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 const Login = () => {
   const navigate = useNavigate();
   const [type, setType] = useState('login');
@@ -36,23 +38,14 @@ const Login = () => {
           password: loginState.password
         }
       })
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body
-    }
 
-    fetch(url, requestOptions)
-      .then(async (res) => {
-        const resJson = await res.json();
-        if(res.status !== 200) return Promise.reject(resJson);
-        return resJson;
-      })
-      .then(resJson => {
-        console.log('success', resJson);
+    axios.post(url, body, {headers: {"Content-Type": "application/json"}})
+      .then(res => {
+        console.log('success', res);
+        localStorage.setItem('access_token', res.headers['authorization']);
         navigate('/index');
       })
-      .catch(err => console.log('err', err.message))
+      .catch(err => console.log('err', err.response.data.message))
   }
 
   const onRegisterFormSubmit = () => {
@@ -65,20 +58,12 @@ const Login = () => {
         password: registerState.password
       }
     })
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body
-    }
-    
-    fetch(url, requestOptions)
-      .then(async (res) => {
-        const resJson = await res.json();
-        if(res.status !== 200) return Promise.reject(resJson);
-        return resJson;
+
+    axios.post(url, body, {headers: {"Content-Type": "application/json"}})
+      .then(res => {
+        console.log('success', res);
       })
-      .then(res => console.log('result', res))
-      .catch(err => console.log('err', err))
+      .catch(err => console.log('err', err.response.data.message))
   }
 
   return (
