@@ -23,6 +23,14 @@ const todosStore = (set) => ({
     set((state) => ({
       todos: [...state.todos, newTodo]
     }))
+  },
+  updateItem: ({id, title}) => {
+    set((state) => ({
+      todos: [...state.todos.map(todo => {
+        if(todo.id === id) todo.title = title;
+        return todo;
+      })]
+    }))
   }
 })
 export const useTodosStore = create(todosStore)
