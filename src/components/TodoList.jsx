@@ -1,9 +1,28 @@
 import styles from '@/styles/TodoList.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTodosStore } from '@/store';
 import TodoItem from './TodoItem';
+import axios from 'axios';
 const TodoList = () => {
-  const todos = useTodosStore((state) => state.todos)
+  
+  const {initialTodos, todos} = useTodosStore(state => state)
+  const [todoList, setTodoList] = useState([]);
+  useEffect(() => {
+    const url = 'https://todoo.5xcamp.us/todos';
+    axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `${localStorage.getItem('access_token') || ''}`
+      }
+    })
+    .then(res => {
+      initialTodos(res.data.todos);
+      console.log('result', res.data.todos, todos)
+      setTodoList(todos);
+    })
+  }, [])
+
+
   const [category, setCategory] = useState('all');  
   const onTabChange = (type) => {
     setCategory(type)
@@ -27,7 +46,7 @@ const TodoList = () => {
       <div className={styles['todo-content']}> 
         <ul>
           {
-            todos.map((todo) => (
+            todoList.map((todo) => (
               <TodoItem 
                 key={todo.id}
                 title={todo.title}
