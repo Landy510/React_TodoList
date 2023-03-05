@@ -8,7 +8,6 @@ const TodoList = () => {
   const {initialTodos, todos} = useTodosStore(state => state)
   useEffect(() => {
     const url = 'https://todoo.5xcamp.us/todos';
-    console.log('會嗎?')
     axios.get(url, {
       headers: {
         "Content-Type": "application/json",

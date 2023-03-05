@@ -28,6 +28,11 @@ const todosStore = (set) => ({
         return todo;
       })
     }))
+  },
+  delTodoItem: ({id}) => {
+    set((state) => ({
+      todos: state.todos.filter((todo) => todo.id !== id)
+    }))
   }
 })
 export const useTodosStore = create(todosStore)
