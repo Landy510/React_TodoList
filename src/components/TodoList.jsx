@@ -6,20 +6,16 @@ import axios from 'axios';
 const TodoList = () => {
   
   const {initialTodos, todos} = useTodosStore(state => state)
-  const [todoList, setTodoList] = useState([]);
   useEffect(() => {
     const url = 'https://todoo.5xcamp.us/todos';
+    console.log('會嗎?')
     axios.get(url, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `${localStorage.getItem('access_token') || ''}`
       }
     })
-    .then(res => {
-      initialTodos(res.data.todos);
-      console.log('result', res.data.todos, todos)
-      setTodoList(todos);
-    })
+    .then(res => initialTodos(res.data.todos))
   }, [])
 
 
@@ -46,10 +42,10 @@ const TodoList = () => {
       <div className={styles['todo-content']}> 
         <ul>
           {
-            todoList.map((todo) => (
+            todos.map((todo) => (
               <TodoItem 
                 key={todo.id}
-                title={todo.title}
+                content={todo.content}
                 id={todo.id}
                 completed={todo.completed}
               ></TodoItem>

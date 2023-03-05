@@ -21,7 +21,8 @@ const InputTodo = () => {
       }
     })
     .then(res => {
-      addTodoItem({id: res.data.id, title: res.data.content});
+      console.log('input result', res.data)
+      addTodoItem({id: res.data.id, content: res.data.content});
       inputRef.current.value = '';
     })
     .catch(err => console.log('add fail', err))

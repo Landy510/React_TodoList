@@ -1,8 +1,17 @@
 .todo-section {
   max-width: 500px;
   width: 100%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  // position: absolute;
+  // left: 50%;
+  // top: 50%;
+  // transform: translate(-50%, -50%);
+  margin: 40px auto 0 auto;
+  padding-bottom: 20px;
+}
+
+@media(max-width: 378px) {
+  .todo-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

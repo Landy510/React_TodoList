@@ -4,7 +4,7 @@ import axios from "axios";
 import { useTodosStore } from "@/store";
 
 import styles from '@/styles/TodoItem.module.scss';
-const TodoItem = ({id, title, completed}) => {
+const TodoItem = ({id, content, completed}) => {
   const updateItem = useTodosStore(state => state.updateItem);
   const [editing, setEditing] = useState(false);
   const updateInputRef = useRef();
@@ -35,7 +35,7 @@ const TodoItem = ({id, title, completed}) => {
           "Authorization": `${localStorage.getItem('access_token') || ''}`
         }
       })
-      .then(res => updateItem({id: res.data.id, title: res.data.content}))
+      .then(res => updateItem({id: res.data.id, content: res.data.content}))
       .catch(err => console.log('update error', err))
     }
   }
@@ -60,7 +60,7 @@ const TodoItem = ({id, title, completed}) => {
                 } 
               </span>
               <span className={`${completed ? styles['done'] : ''}`}>
-                {title}
+                {content}
               </span>
             </p>
           </>
@@ -69,7 +69,7 @@ const TodoItem = ({id, title, completed}) => {
           <p className={styles['edit-section']}>
             <input 
               type="text" 
-              defaultValue={title}
+              defaultValue={content}
               style={editMode}
               ref={updateInputRef}
               onKeyDown={(e) => handleUpdatedDone(e)}
