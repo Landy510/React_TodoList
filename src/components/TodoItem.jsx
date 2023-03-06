@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsXLg, BsCheckLg } from "react-icons/bs";
 import axios from "axios";
 import { useTodosStore } from "@/store";
@@ -6,9 +6,11 @@ import { useTodosStore } from "@/store";
 import styles from '@/styles/TodoItem.module.scss';
 const TodoItem = ({id, content, completed}) => {
   const {updateItem, delTodoItem} = useTodosStore(state => state);
+  const [clickInfo, setClickInfo] = useState({count: 0, triggerTimeStamp: 0});
   const [editing, setEditing] = useState(false);
   const [delBtnState, setDelBtnState] = useState({display: 'none'});
   const updateInputRef = useRef();
+  const paragraphRef = useRef();
   let viewMode = {};
   let editMode = {};
   if(editing) {
@@ -17,9 +19,36 @@ const TodoItem = ({id, content, completed}) => {
     editMode['display'] = 'none';
   }
 
+  useEffect(() => {
+    const outsideClickListener = (event) => {
+      console.log(editing, paragraphRef.current)
+      if(editing && paragraphRef.current && !paragraphRef.current.contains(event.target)) {
+        setEditing(false)
+      }
+      document.removeEventListener('click', outsideClickListener);
+    }
+    return () => {
+      document.addEventListener('click', outsideClickListener);
+    }
+  }, [editing])
+  
+
   const handleEditing = () => {
-    console.log('hello')
-    setEditing(true);
+    setClickInfo({...clickInfo, count: clickInfo.count++});
+    
+    if(clickInfo.count === 2) {
+      const currentTimeStamp = new Date().getTime();
+      const dtInSeconds = (currentTimeStamp - clickInfo.triggerTimeStamp)/1000;
+      clickInfo.triggerTimeStamp = setClickInfo({...clickInfo, triggerTimeStamp: currentTimeStamp});
+      setClickInfo({...clickInfo, count: 0});
+      if(dtInSeconds > 0.3) return;
+      setEditing(true);
+    } else {
+      setClickInfo({...clickInfo, triggerTimeStamp: new Date().getTime()});
+      setTimeout(() => {
+        setClickInfo({...clickInfo, count: 0});
+      }, 300)
+    }
   }
 
   const handleUpdatedDone = (evt) => {
@@ -77,7 +106,7 @@ const TodoItem = ({id, content, completed}) => {
         !editing ? 
         (
           <>
-            <p onDoubleClick={handleEditing}>
+            <p onClick={handleEditing}>
               <span className={styles['checkbox-section']}>
                 {
                   !completed ? 
@@ -97,7 +126,9 @@ const TodoItem = ({id, content, completed}) => {
           </>
         ):
         (
-          <p className={styles['edit-section']}>
+          <p
+            ref={paragraphRef} 
+            className={styles['edit-section']}>
             <input 
               type="text" 
               defaultValue={content}
