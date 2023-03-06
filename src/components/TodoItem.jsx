@@ -9,6 +9,9 @@ const TodoItem = ({id, content, completed}) => {
   const [clickInfo, setClickInfo] = useState({count: 0, triggerTimeStamp: 0});
   const [editing, setEditing] = useState(false);
   const [delBtnState, setDelBtnState] = useState({display: 'none'});
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 378);
+
+
   const updateInputRef = useRef();
   const paragraphRef = useRef();
   let viewMode = {};
@@ -18,17 +21,39 @@ const TodoItem = ({id, content, completed}) => {
   } else {
     editMode['display'] = 'none';
   }
-
+  
   useEffect(() => {
+    if(clickInfo.count !== 2) return;
+
     const outsideClickListener = (event) => {
-      console.log(editing, paragraphRef.current)
       if(editing && paragraphRef.current && !paragraphRef.current.contains(event.target)) {
-        setEditing(false)
+        setEditing(false);
+        setClickInfo({...clickInfo, count: 0});
+        if(isMobile) {
+          const url = `https://todoo.5xcamp.us/todos/${id}`;
+          const body = {
+            todo: {
+              content: updateInputRef.current.value
+            }
+          }
+          axios.put(url, body, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `${localStorage.getItem('access_token') || ''}`
+            }
+          })
+          .then(res => updateItem({id: res.data.id, content: res.data.content}))
+          .catch(err => console.log('update error', err))
+        }
       }
-      document.removeEventListener('click', outsideClickListener);
     }
-    return () => {
+    
+    setTimeout(() => {
       document.addEventListener('click', outsideClickListener);
+    }, 300)
+
+    return () => {
+      document.removeEventListener('click', outsideClickListener);
     }
   }, [editing])
   
@@ -39,8 +64,8 @@ const TodoItem = ({id, content, completed}) => {
     if(clickInfo.count === 2) {
       const currentTimeStamp = new Date().getTime();
       const dtInSeconds = (currentTimeStamp - clickInfo.triggerTimeStamp)/1000;
-      clickInfo.triggerTimeStamp = setClickInfo({...clickInfo, triggerTimeStamp: currentTimeStamp});
-      setClickInfo({...clickInfo, count: 0});
+
+      setClickInfo({...clickInfo, triggerTimeStamp: currentTimeStamp});
       if(dtInSeconds > 0.3) return;
       setEditing(true);
     } else {
