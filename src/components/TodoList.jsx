@@ -46,7 +46,7 @@ const TodoList = () => {
                 key={todo.id}
                 content={todo.content}
                 id={todo.id}
-                completed={todo.completed}
+                completed_at={todo.completed_at}
               ></TodoItem>
             ))
           }

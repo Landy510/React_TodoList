@@ -12,7 +12,7 @@ const todosStore = (set) => ({
     const newTodo = {
       id,
       content,
-      completed: false
+      completed_at: false
     }
 
     console.log('inner step2', newTodo);
@@ -32,6 +32,14 @@ const todosStore = (set) => ({
   delTodoItem: ({id}) => {
     set((state) => ({
       todos: state.todos.filter((todo) => todo.id !== id)
+    }))
+  },
+  toggleTodoItem: (id) => {
+    set((state) => ({
+      todos: state.todos.map((todo) => {
+        if(todo.id === id) todo.completed_at = !todo.completed_at;
+        return todo;
+      })
     }))
   }
 })

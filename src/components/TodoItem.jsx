@@ -4,8 +4,8 @@ import axios from "axios";
 import { useTodosStore } from "@/store";
 
 import styles from '@/styles/TodoItem.module.scss';
-const TodoItem = ({id, content, completed}) => {
-  const {updateItem, delTodoItem} = useTodosStore(state => state);
+const TodoItem = ({id, content, completed_at}) => {
+  const {updateItem, delTodoItem, toggleTodoItem} = useTodosStore(state => state);
   const [clickInfo, setClickInfo] = useState({count: 0, triggerTimeStamp: 0});
   const [editing, setEditing] = useState(false);
   const [delBtnState, setDelBtnState] = useState({display: 'none'});
@@ -121,6 +121,25 @@ const TodoItem = ({id, content, completed}) => {
     .catch(err => console.log('del fail', err))
   }
 
+  const toggleItemStatus = () => {
+    const url = `https://todoo.5xcamp.us/todos/${id}/toggle`;
+    axios.patch(url, null, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `${localStorage.getItem('access_token') || ''}`
+      }
+    }
+    )
+    .then(res => {
+      console.log(res)
+      toggleTodoItem(id)
+    })
+    .catch(err => {
+      console.log('toggle fail', err)
+    })
+    
+  }
+
   return (
     <li 
       className={styles['todoItem']}
@@ -134,8 +153,12 @@ const TodoItem = ({id, content, completed}) => {
             <p onClick={handleEditing}>
               <span className={styles['checkbox-section']}>
                 {
-                  !completed ? 
-                  (<input type="checkbox" />):
+                  !completed_at ? 
+                  (<input 
+                      type="checkbox" 
+                      onClick={toggleItemStatus}
+                   />
+                  ):
                   (
                     <BsCheckLg style={{
                       fontSize: '20px',
@@ -144,7 +167,7 @@ const TodoItem = ({id, content, completed}) => {
                   )
                 } 
               </span>
-              <span className={`${completed ? styles['done'] : ''}`}>
+              <span className={`${completed_at ? styles['done'] : ''}`}>
                 {content}
               </span>
             </p>
