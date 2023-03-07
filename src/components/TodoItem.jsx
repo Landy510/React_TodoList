@@ -29,6 +29,7 @@ const TodoItem = ({id, content, completed_at}) => {
       if(editing && paragraphRef.current && !paragraphRef.current.contains(event.target)) {
         setEditing(false);
         setClickInfo({...clickInfo, count: 0});
+        setDelBtnState({display: 'none'});
         if(isMobile) {
           const url = `https://todoo.5xcamp.us/todos/${id}`;
           const body = {

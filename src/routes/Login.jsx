@@ -1,10 +1,12 @@
 import styles from '@/styles/Login.module.scss';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/authStore';
 import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { updateUserInfo } = useAuthStore(state => state);
   const [type, setType] = useState('login');
   const [loginState, setLoginState] = useState({
     email: '',
@@ -41,8 +43,9 @@ const Login = () => {
 
     axios.post(url, body, {headers: {"Content-Type": "application/json"}})
       .then(res => {
-        console.log('success', res);
+        updateUserInfo(res.data)
         localStorage.setItem('access_token', res.headers['authorization']);
+        localStorage.setItem('user_name', res.data.nickname)
         navigate('/index');
       })
       .catch(err => console.log('err', err.response.data.message))
