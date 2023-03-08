@@ -46,7 +46,8 @@ const Login = () => {
         updateUserInfo(res.data)
         localStorage.setItem('access_token', res.headers['authorization']);
         localStorage.setItem('user_name', res.data.nickname)
-        navigate('/index');
+        // navigate('/index');
+        navigate('/');
       })
       .catch(err => console.log('err', err.response.data.message))
   }

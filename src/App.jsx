@@ -8,7 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Layout/>}>
+      {/* <Route path="/" element={<Layout/>}>
         <Route index element={<Login/>}></Route>
         <Route 
           path='index' 
@@ -18,6 +18,19 @@ const App = () => {
             </ProtectedRoute>
           }
         ></Route>
+      </Route> */}
+      <Route path='/login' element={<Login/>}></Route>
+      <Route 
+        path="/" 
+        element={
+          <ProtectedRoute>
+            <Layout/>    
+          </ProtectedRoute>
+        }>
+          <Route 
+            index
+            element={<Index/>}
+          ></Route>
       </Route>
     </Routes>
   )

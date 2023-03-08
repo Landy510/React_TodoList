@@ -3,41 +3,40 @@ import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const loadData = (access) => {
-  const [accessState, setAccessState] = useState(false);
-  console.log('Hello123s')
-  useEffect(() => {
-    axios.get('https://todoo.5xcamp.us/check', {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `${localStorage.getItem('access_token') || ''}`
-        }
-      })
-      .then(res => {
-        return setAccessState(true);
-      })
-      .catch(err => {
-        console.log('check error', err);
-        return setAccessState(false);
-      })
-  }, [])
-
-  return accessState;
-}
-
 const ProtectedRoute = ({children}) => {
   const location = useLocation();
-  const result = loadData(false);
+  const [checkResult, setCheckResult] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if(!result) {
-    return (
-      <Navigate
-        to='/index'
-        state={{pathname: location.pathname}}
-      ></Navigate>
-    )
+  useEffect(() => {
+    (
+      async () => {
+        try {
+          const result = await axios.get('https://todoo.5xcamp.us/check', {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `${localStorage.getItem('access_token') || ''}`
+            }
+          })
+          setIsLoading(false);
+          setCheckResult(true);
+        }
+        catch {
+          setIsLoading(false);
+          setCheckResult(false);
+        }
+      }
+    )()
+  }, [])
+
+  if(!isLoading) {
+    return !checkResult ? <Navigate to='/login' state={{pathname: location.pathname}}></Navigate> : children;
   }
-  return children;
+  return (
+    <>Loading...</>
+  )
+
+  
 }
 
 export default ProtectedRoute;

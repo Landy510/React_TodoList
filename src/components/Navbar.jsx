@@ -17,7 +17,7 @@ const Navbar = () => {
     .then((res) => {
       localStorage.getItem('access_token') && localStorage.clear('access_token');
       localStorage.getItem('user_name') && localStorage.clear('user_name');
-      navigate('/');
+      navigate('/login');
     })
     .catch(err => console.log('logout err', err))
   }
