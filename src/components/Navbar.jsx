@@ -17,6 +17,12 @@ const Navbar = () => {
     .then((res) => {
       localStorage.getItem('access_token') && localStorage.clear('access_token');
       localStorage.getItem('user_name') && localStorage.clear('user_name');
+      // if(globalThis['myWorker']) {
+      //   const data = {
+      //     mission: 'stop',
+      //   }
+      //   globalThis['myWorker'].postMessage(data);
+      // }
       navigate('/login');
     })
     .catch(err => console.log('logout err', err))

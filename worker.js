@@ -1,11 +1,26 @@
+let timerId = undefined;  
 addEventListener('message', ({data}) => {
-  const timerId =setInterval(() => {
-    const currentInSecond = Math.floor(new Date().getTime() / 1000);
-    const dt = currentInSecond - data;
-    if(dt > -1296000) {
-      postMessage('logout');
+  switch(data.mission) {
+    case 'start':
+      if(timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+      timerId = setInterval(() => {
+        const currentInSecond = Math.floor(new Date().getTime() / 1000);
+        const dt = currentInSecond - data.expireDate;
+        if(dt > 0) {
+          postMessage('logout');
+          clearInterval(timerId);
+          self.close();
+        }  
+      }, 1000)
+      
+    break;
+    case 'stop':
       clearInterval(timerId);
-    }
-  }, 1000)
-  
+      timerId = null;
+      self.close();
+    break;
+  }
 })
