@@ -41,14 +41,36 @@ const TodoList = () => {
       <div className={styles['todo-content']}> 
         <ul>
           {
-            todos.map((todo) => (
-              <TodoItem 
-                key={todo.id}
-                content={todo.content}
-                id={todo.id}
-                completed_at={todo.completed_at}
-              ></TodoItem>
-            ))
+            todos.map((todo) => {
+              if(category === 'todo') {
+                return (
+                  !todo.completed_at && <TodoItem 
+                    key={todo.id}
+                    content={todo.content}
+                    id={todo.id}
+                    completed_at={todo.completed_at}
+                  ></TodoItem>
+                )
+              }
+              else if(category === 'finished') {
+                return (
+                  todo.completed_at && <TodoItem 
+                    key={todo.id}
+                    content={todo.content}
+                    id={todo.id}
+                    completed_at={todo.completed_at}
+                  ></TodoItem>
+                )
+              }
+              return (
+                <TodoItem 
+                  key={todo.id}
+                  content={todo.content}
+                  id={todo.id}
+                  completed_at={todo.completed_at}
+                ></TodoItem>
+              )
+            })
           }
         </ul>
       </div>
