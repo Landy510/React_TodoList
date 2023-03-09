@@ -1,43 +1,24 @@
 import styles from '@/styles/Login.module.scss';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/authStore';
 import axios from 'axios';
+import { useForm } from 'react-hook-form';
 
-const Login = () => {
+const LoginForm = ({formDisplayState}) => {
+  const updateUserInfo = useAuthStore(state => state.updateUserInfo);
   const navigate = useNavigate();
-  const { updateUserInfo } = useAuthStore(state => state);
-  const [type, setType] = useState('login');
-  const [loginState, setLoginState] = useState({
-    email: '',
-    password: ''
-  })
-  const [registerState, setRegisterState] = useState({
-    email: '',
-    nickname: '',
-    password: '',
-    rePassword: ''
-  })
-  const handleLoginFormChange = (evt) => {
-    setLoginState({
-      ...loginState,
-      [evt.target.name]: evt.target.value
-    })
-  }
-  const handleRegisterFormChange = (evt) => {
-    setRegisterState({
-      ...registerState,
-      [evt.target.name]: evt.target.value
-    })
-  }
-
-  const onLoginFormSubmit = () => {
-    if(type !== 'login') return; // 防止 form 表單是在 註冊帳號的狀態下，去按 登入鈕 會執行以下去打 登入 api 的狀況
+  const {
+    register,
+    formState: { errors },
+    getValues
+  } = useForm();
+  const onSubmitEvt = () => {
     const url = 'https://todoo.5xcamp.us/users/sign_in'
     const body = JSON.stringify({
         user: {
-          email: loginState.email,
-          password: loginState.password
+          email: getValues('email'),
+          password: getValues('password')
         }
       })
 
@@ -46,20 +27,56 @@ const Login = () => {
         updateUserInfo(res.data)
         localStorage.setItem('access_token', res.headers['authorization']);
         localStorage.setItem('user_name', res.data.nickname)
-        // navigate('/index');
         navigate('/');
       })
       .catch(err => console.log('err', err.response.data.message))
   }
 
-  const onRegisterFormSubmit = () => {
-    if(type !== 'register') return; // 防止 form 表單是在 登入的狀態下，去按 登入鈕 會執行以下去打 註冊帳號 api 的狀況
+  if(formDisplayState.show === 'login' && formDisplayState.submit === 'login-submit') {
+    onSubmitEvt()
+  }
+
+  return (
+    <form style={{
+      display: `${formDisplayState.show === 'login' ? 'block' : 'none'}`
+    }}>
+      <div className={styles['cell']}>
+        <label htmlFor='email' className={`text-bold ${styles['label']}`}>Email</label>
+        <input 
+          type="email" 
+          placeholder='請輸入Email'
+          id='email'
+          {...register('email')}
+        />
+        <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>
+      </div>
+      <div className={styles['cell']}>
+        <label htmlFor='password' className={`text-bold ${styles['label']}`}>密碼</label>
+        <input 
+          type="password" 
+          placeholder='請輸入密碼'
+          id='password'
+          {...register('password')}
+        />
+      </div>
+    </form>
+  )  
+}
+
+const RegisterForm = ({ formDisplayState }) => {
+  const {
+    register,
+    formState: { errors },
+    getValues
+  } = useForm();
+
+  const onSubmitEvt = () => {
     const url = 'https://todoo.5xcamp.us/users';
     const body = JSON.stringify({
       user:{
-        email: registerState.email,
-        nickname: registerState.nickname,
-        password: registerState.password
+        email: getValues('email'),
+        nickname: getValues('nickname'),
+        password: getValues('register_password')
       }
     })
 
@@ -68,6 +85,99 @@ const Login = () => {
         console.log('success', res);
       })
       .catch(err => console.log('err', err.response.data.message))
+  }
+
+  if(formDisplayState.show === 'register' && formDisplayState.submit === 'register-submit') {
+    onSubmitEvt();
+  }
+
+  return (
+    <form style={{
+      display: `${formDisplayState.show === 'register' ? 'block' : 'none'}`
+    }}>
+      <div className={styles['cell']}>
+        <label htmlFor='register_email' className={`text-bold ${styles['label']}`}>Email</label>
+        <input 
+          type="email" 
+          placeholder='請輸入Email'
+          id='register_email'
+          {...register('email')}
+        />
+      </div>
+      <div className={styles['cell']}>
+        <label htmlFor='nickname' className={`text-bold ${styles['label']}`}>您的暱稱</label>
+        <input 
+          type="text" 
+          placeholder='請輸入您的暱稱'
+          id='nickname'
+          {...register('nickname')}
+        />
+      </div>
+      <div className={styles['cell']}>
+        <label htmlFor='register_password' className={`text-bold ${styles['label']}`}>密碼</label>
+        <input 
+          type="password" 
+          placeholder='請輸入密碼'
+          id='register_password'
+          {...register('register_password')}
+        />
+      </div>
+      <div className={styles['cell']}>
+        <label htmlFor='rePassword' className={`text-bold ${styles['label']}`}>請再次輸入密碼</label>
+        <input 
+          type="password" 
+          placeholder='請再次輸入密碼'
+          id='rePassword'
+          {...register('rePassword')}
+        />
+      </div>
+    </form>
+  )
+}
+
+
+const Login = () => {
+  const {
+    formState: { errors },
+  } = useForm();
+
+  const [formState, setFormState] = useState({
+    show: 'login',
+    submit: ''
+  });
+
+  const onLoginFormSubmit = () => {
+    if(formState.show === 'login') {
+      // 代表當前已經是 login form 的狀態了，此時，按下登入紐，就是要將表單送出
+      setFormState({
+        ...formState,
+        submit: 'login-submit'
+      })
+      return;
+    }
+
+    setFormState({
+      ...formState,
+      show: 'login',
+      submit: ''
+    })
+  }
+
+  const onRegisterFormSubmit = () => {
+    if(formState.show === 'register') {
+      // 代表當前已經是 register form 的狀態了，此時，按下註冊帳號紐，就是要將表單送出
+      setFormState({
+        ...formState,
+        submit: 'register-submit'
+      })
+      return;
+    }
+    
+    setFormState({
+      ...formState,
+      show: 'register',
+      submit: ''
+    })
   }
 
   return (
@@ -79,99 +189,31 @@ const Login = () => {
 
 
         {/* Login Form | START */}
-        <form 
-          className={type === 'login' ? styles['active'] : styles['hidden']}
-        >
-          <div className={styles['cell']}>
-            <label htmlFor='email' className={`text-bold ${styles['label']}`}>Email</label>
-            <input 
-              type="email" 
-              placeholder='請輸入Email'
-              id='email'
-              name="email"
-              value={loginState.email}
-              onChange={handleLoginFormChange}
-            />
-            <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>
-          </div>
-          <div className={styles['cell']}>
-            <label htmlFor='password' className={`text-bold ${styles['label']}`}>密碼</label>
-            <input 
-              type="password" 
-              placeholder='請輸入密碼'
-              id='password'
-              name="password"
-              value={loginState.password}
-              onChange={handleLoginFormChange}
-            />
-          </div>
-        </form>
+        <LoginForm 
+          formDisplayState={formState}
+        />
         {/* Login Form | END */}
 
         {/* Register Form | START */}
-        <form className={type === 'register' ? styles['active'] : styles['hidden']}>
-          <div className={styles['cell']}>
-            <label htmlFor='register_email' className={`text-bold ${styles['label']}`}>Email</label>
-            <input 
-              type="email" 
-              placeholder='請輸入Email'
-              id='register_email'
-              name='email'
-              value={registerState.email}
-              onChange={handleRegisterFormChange}
-            />
-          </div>
-          <div className={styles['cell']}>
-            <label htmlFor='nickname' className={`text-bold ${styles['label']}`}>您的暱稱</label>
-            <input 
-              type="text" 
-              placeholder='請輸入您的暱稱'
-              id='nickname'
-              name='nickname'
-              value={registerState.nickname}
-              onChange={handleRegisterFormChange}
-            />
-          </div>
-          <div className={styles['cell']}>
-            <label htmlFor='register_password' className={`text-bold ${styles['label']}`}>密碼</label>
-            <input 
-              type="password" 
-              placeholder='請輸入密碼'
-              id='register_password'
-              name='password'
-              value={registerState.password}
-              onChange={handleRegisterFormChange}
-            />
-          </div>
-          <div className={styles['cell']}>
-            <label htmlFor='rePassword' className={`text-bold ${styles['label']}`}>請再次輸入密碼</label>
-            <input 
-              type="password" 
-              placeholder='請再次輸入密碼'
-              id='rePassword'
-              name='rePassword'
-              value={registerState.rePassword}
-              onChange={handleRegisterFormChange}
-            />
-          </div>
-        </form>
+        <RegisterForm 
+          formDisplayState={formState}
+        />
+        {/* Register Form | END*/}
 
         <div className={styles['btn-section']}>
             <button 
-              className={`fz-medium text-bold ${type==='login' ? 'active' : ''}`}
-              style={type ==='login' ? {order: '-1'} : {}}
+              className={`fz-medium text-bold ${formState.show ==='login' ? 'active' : ''}`}
+              style={formState.show ==='login' ? {order: '-1'} : {}}
               type='button'
               onClick={() => {
-                setType('login');
                 onLoginFormSubmit();
               }}
             >登入</button>
             <button 
-              className={`fz-medium text-bold ${type==='register' ? 'active' : ''}`} 
-              style={type==='register' ? {order: '-1'} : {}}
+              className={`fz-medium text-bold ${formState.show ==='register' ? 'active' : ''}`} 
+              style={formState.show ==='register' ? {order: '-1'} : {}}
               type='button'
               onClick={() => {
-                setType('register');
                 onRegisterFormSubmit();
               }}
             >註冊帳號</button>
