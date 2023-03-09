@@ -11,9 +11,19 @@ const LoginForm = ({formDisplayState}) => {
   const {
     register,
     formState: { errors },
-    getValues
+    getValues,
+    trigger
   } = useForm();
-  const onSubmitEvt = () => {
+  
+  useEffect(() => {
+    if(formDisplayState.show === 'login' && formDisplayState.submit === 'login-submit') {
+      onSubmitEvt()
+    }
+  }, [formDisplayState])
+
+  const onSubmitEvt = async () => {
+    const valid_result = await trigger();
+    if(!valid_result) return;
     const url = 'https://todoo.5xcamp.us/users/sign_in'
     const body = JSON.stringify({
         user: {
@@ -32,10 +42,6 @@ const LoginForm = ({formDisplayState}) => {
       .catch(err => console.log('err', err.response.data.message))
   }
 
-  if(formDisplayState.show === 'login' && formDisplayState.submit === 'login-submit') {
-    onSubmitEvt()
-  }
-
   return (
     <form style={{
       display: `${formDisplayState.show === 'login' ? 'block' : 'none'}`
@@ -46,9 +52,10 @@ const LoginForm = ({formDisplayState}) => {
           type="email" 
           placeholder='請輸入Email'
           id='email'
-          {...register('email')}
+          {...register('email', {required: true, pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g})}
         />
-        <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>
+        {errors.email?.type === 'required' && <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>}
+        {errors.email?.type === 'pattern' && <p className={`text-bold ${styles['warn-msg']}`}>不符合 Email 規則</p>}
       </div>
       <div className={styles['cell']}>
         <label htmlFor='password' className={`text-bold ${styles['label']}`}>密碼</label>
@@ -56,8 +63,9 @@ const LoginForm = ({formDisplayState}) => {
           type="password" 
           placeholder='請輸入密碼'
           id='password'
-          {...register('password')}
+          {...register('password', {required: true})}
         />
+        {errors.password?.type === 'required' && <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>}
       </div>
     </form>
   )  
@@ -67,10 +75,21 @@ const RegisterForm = ({ formDisplayState }) => {
   const {
     register,
     formState: { errors },
-    getValues
+    getValues,
+    trigger
   } = useForm();
 
-  const onSubmitEvt = () => {
+  console.log('errors',errors)
+
+  useEffect(() => {
+    if(formDisplayState.show === 'register' && formDisplayState.submit === 'register-submit') {
+      onSubmitEvt();
+    }
+  }, [formDisplayState])
+
+  const onSubmitEvt = async () => {
+    const valid_result = await trigger();
+    if(!valid_result) return;
     const url = 'https://todoo.5xcamp.us/users';
     const body = JSON.stringify({
       user:{
@@ -87,10 +106,6 @@ const RegisterForm = ({ formDisplayState }) => {
       .catch(err => console.log('err', err.response.data.message))
   }
 
-  if(formDisplayState.show === 'register' && formDisplayState.submit === 'register-submit') {
-    onSubmitEvt();
-  }
-
   return (
     <form style={{
       display: `${formDisplayState.show === 'register' ? 'block' : 'none'}`
@@ -101,8 +116,10 @@ const RegisterForm = ({ formDisplayState }) => {
           type="email" 
           placeholder='請輸入Email'
           id='register_email'
-          {...register('email')}
+          {...register('email', {required: true, pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g})}
         />
+        {errors.email?.type === 'required' && <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>}
+        {errors.email?.type === 'pattern' && <p className={`text-bold ${styles['warn-msg']}`}>不符合 Email 規則</p>}
       </div>
       <div className={styles['cell']}>
         <label htmlFor='nickname' className={`text-bold ${styles['label']}`}>您的暱稱</label>
@@ -110,8 +127,10 @@ const RegisterForm = ({ formDisplayState }) => {
           type="text" 
           placeholder='請輸入您的暱稱'
           id='nickname'
-          {...register('nickname')}
+          {...register('nickname', {required: true})}
         />
+        {errors.nickname?.type === 'required' && <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>}
+
       </div>
       <div className={styles['cell']}>
         <label htmlFor='register_password' className={`text-bold ${styles['label']}`}>密碼</label>
@@ -119,8 +138,10 @@ const RegisterForm = ({ formDisplayState }) => {
           type="password" 
           placeholder='請輸入密碼'
           id='register_password'
-          {...register('register_password')}
+          {...register('register_password', {required: true, minLength: 6})}
         />
+        {errors.register_password?.type === 'required' && <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>}
+        {errors.register_password?.type === 'minLength' && <p className={`text-bold ${styles['warn-msg']}`}>最少不低於 6 碼</p>}
       </div>
       <div className={styles['cell']}>
         <label htmlFor='rePassword' className={`text-bold ${styles['label']}`}>請再次輸入密碼</label>
@@ -128,8 +149,10 @@ const RegisterForm = ({ formDisplayState }) => {
           type="password" 
           placeholder='請再次輸入密碼'
           id='rePassword'
-          {...register('rePassword')}
+          {...register('rePassword', {required: true, minLength: 6})}
         />
+        {errors.rePassword?.type === 'required' && <p className={`text-bold ${styles['warn-msg']}`}>此欄位不可為空</p>}
+        {errors.rePassword?.type === 'minLength' && <p className={`text-bold ${styles['warn-msg']}`}>最少不低於 6 碼</p>}
       </div>
     </form>
   )
