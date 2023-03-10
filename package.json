@@ -1,7 +1,7 @@
 {
   "name": "react-todolist",
   "homepage": "https://Landy510.github.io/React_TodoList/",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
