@@ -79,8 +79,6 @@ const RegisterForm = ({ formDisplayState }) => {
     trigger
   } = useForm();
 
-  console.log('errors',errors)
-
   useEffect(() => {
     if(formDisplayState.show === 'register' && formDisplayState.submit === 'register-submit') {
       onSubmitEvt();
