@@ -63,3 +63,11 @@ button.active {
 .fz-large {
   font-size: 24px;
 }
+
+.swal2-styled.swal2-confirm.sweet-alert-confirm-btn {
+  background-color: #FFD370;
+}
+
+.swal2-styled.swal2-confirm.sweet-alert-confirm-btn:focus {
+  box-shadow: none;
+}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/authStore';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2'
 
 const LoginForm = ({formDisplayState}) => {
   const updateUserInfo = useAuthStore(state => state.updateUserInfo);
@@ -39,7 +40,18 @@ const LoginForm = ({formDisplayState}) => {
         localStorage.setItem('user_name', res.data.nickname)
         navigate('/');
       })
-      .catch(err => console.log('err', err.response.data.message))
+      .catch(err => {
+        console.log('err', err.response.data.message);
+        Swal.fire({
+          title: 'Error!',
+          text: err.response.data.message,
+          icon: 'error',
+          confirmButtonText: 'Ok',
+          customClass: {
+            confirmButton: 'sweet-alert-confirm-btn'
+          }
+        })
+      })
   }
 
   return (
@@ -101,7 +113,18 @@ const RegisterForm = ({ formDisplayState }) => {
       .then(res => {
         console.log('success', res);
       })
-      .catch(err => console.log('err', err.response.data.message))
+      .catch(err => {
+        console.log('err', err.response.data.message);
+        Swal.fire({
+          title: 'Error!',
+          text: err.response.data.message,
+          icon: 'error',
+          confirmButtonText: 'Ok',
+          customClass: {
+            confirmButton: 'sweet-alert-confirm-btn'
+          }
+        })
+      })
   }
 
   return (
