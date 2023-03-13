@@ -3,7 +3,7 @@ import styles from '@/styles/Layout.module.scss';
 const Layout = () => {
   const {pathname} = useLocation();
   return (
-    <div className={`${styles.wrapper} ${pathname === '/' ? '' : styles.accessed}`}>
+    <div className={`${styles.wrapper} ${pathname === '/login' ? '' : styles.accessed}`}>
       <Outlet></Outlet>
     </div>
   )

@@ -8,7 +8,7 @@ const TodoItem = ({id, content, completed_at}) => {
   const {updateItem, delTodoItem, toggleTodoItem} = useTodosStore(state => state);
   const [clickInfo, setClickInfo] = useState({count: 0, triggerTimeStamp: 0});
   const [editing, setEditing] = useState(false);
-  const [delBtnState, setDelBtnState] = useState({display: 'none'});
+  const [delBtnState, setDelBtnState] = useState({opacity: 0});
   const [isMobile, setIsMobile] = useState(window.innerWidth < 378);
 
 
@@ -29,7 +29,7 @@ const TodoItem = ({id, content, completed_at}) => {
       if(editing && paragraphRef.current && !paragraphRef.current.contains(event.target)) {
         setEditing(false);
         setClickInfo({...clickInfo, count: 0});
-        setDelBtnState({display: 'none'});
+        setDelBtnState({opacity: 0});
         if(isMobile) {
           const url = `https://todoo.5xcamp.us/todos/${id}`;
           const body = {
@@ -99,12 +99,12 @@ const TodoItem = ({id, content, completed_at}) => {
 
   const handleMouseOver = () => {
     if(editing) return;
-    setDelBtnState({display: 'block'});
+    setDelBtnState({opacity: 1});
   }
 
   const handleMouseLeave = () => {
     if(editing) return;
-    setDelBtnState({display: 'none'});
+    setDelBtnState({opacity: 0});
   }
 
   const delItemFnc = () => {
