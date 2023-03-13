@@ -9,5 +9,5 @@ export default defineConfig({
     }
   },
   plugins: [react()],
-  base: '/React_TodoList/'
+  base: '/Landy510/React_TodoList/'
 })
