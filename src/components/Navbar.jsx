@@ -31,7 +31,7 @@ const Navbar = () => {
   return (
     <nav>
       <a href="#" className={styles.logo}>
-        <img src="src/assets/images/logo.png" alt="" />
+        <img src="/React_TodoList/logo.png" alt="" />
       </a>
 
       <ul className={styles['header-root-list']}>
