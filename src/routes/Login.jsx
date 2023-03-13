@@ -205,7 +205,7 @@ const Login = () => {
 
   return (
     <div className={styles['login-wrapper']}>
-      <img className={styles['desktop-image']} src="/assets/images/left.png" alt="" />
+      <img className={styles['desktop-image']} src="/left.png" alt="" />
       <div className={styles['form-wrapper']}>
         <img className={styles['mobile-image']} src="src/assets/images/logo_lg.png" alt="" />
         <h3 className={`fz-large text-bold ${styles['title']}`}>最實用的線上代辦事項服務</h3>
