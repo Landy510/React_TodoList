@@ -22,7 +22,7 @@ const ProtectedRoute = ({children}) => {
           })
           const jwtToken = localStorage.getItem('access_token').split('Bearer ')[1];
           const expireDate = jwt_decode(jwtToken).exp
-          timerWorker.current = new Worker('../../worker.js');
+          timerWorker.current = new Worker('/React_TodoList/worker.js');
           timerWorker.current.onmessage = async ({data}) => {
             switch(data) {
               case 'logout':
