@@ -8,14 +8,11 @@ const todosStore = (set) => ({
     }))
   },
   addTodoItem: ({id, content}) => {
-    console.log('inner step1', id, content);
     const newTodo = {
       id,
       content,
       completed_at: false
     }
-
-    console.log('inner step2', newTodo);
 
     set((state) => ({
       todos: [...state.todos, newTodo]

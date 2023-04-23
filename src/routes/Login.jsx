@@ -83,13 +83,15 @@ const LoginForm = ({formDisplayState}) => {
   )  
 }
 
-const RegisterForm = ({ formDisplayState }) => {
+const RegisterForm = ({ onSuccessEvtProp, formDisplayState }) => {
   const {
     register,
     formState: { errors },
     getValues,
     trigger
   } = useForm();
+
+  const formRef = useRef(null);
 
   useEffect(() => {
     if(formDisplayState.show === 'register' && formDisplayState.submit === 'register-submit') {
@@ -111,13 +113,24 @@ const RegisterForm = ({ formDisplayState }) => {
 
     axios.post(url, body, {headers: {"Content-Type": "application/json"}})
       .then(res => {
-        console.log('success', res);
+        Swal.fire({
+          title: 'Success!',
+          text: res.data.message,
+          icon: 'success',
+          confirmButtonText: 'Ok',
+          customClass: {
+            confirmButton: 'sweet-alert-confirm-btn'
+          }
+        })
+        .then(() => {
+          formRef.current.reset();
+          onSuccessEvtProp();
+        })
       })
       .catch(err => {
-        console.log('err', err.response.data.message);
         Swal.fire({
           title: 'Error!',
-          text: err.response.data.message,
+          text: `${err.response.data.error.join(',')}`,
           icon: 'error',
           confirmButtonText: 'Ok',
           customClass: {
@@ -128,9 +141,12 @@ const RegisterForm = ({ formDisplayState }) => {
   }
 
   return (
-    <form style={{
-      display: `${formDisplayState.show === 'register' ? 'block' : 'none'}`
-    }}>
+    <form 
+      ref={formRef}
+      style={{
+        display: `${formDisplayState.show === 'register' ? 'block' : 'none'}`
+      }}
+    >
       <div className={styles['cell']}>
         <label htmlFor='register_email' className={`text-bold ${styles['label']}`}>Email</label>
         <input 
@@ -241,6 +257,7 @@ const Login = () => {
         {/* Register Form | START */}
         <RegisterForm 
           formDisplayState={formState}
+          onSuccessEvtProp={onLoginFormSubmit}
         />
         {/* Register Form | END*/}
 
